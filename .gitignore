@@ -1,5 +1,6 @@
-node_modules/
-.expo/
+node_modules/**/*
+.expo/*
+.expo-shared
 npm-debug.*
 *.jks
 *.p8
@@ -8,6 +9,13 @@ npm-debug.*
 *.mobileprovision
 *.orig.*
 web-build/
+.idea
+yarn.lock
+package-lock.json
+miragon-construction-organizer.jks
+
+openapitools.json
+api/.openapi-generator
 
 # macOS
 .DS_Store

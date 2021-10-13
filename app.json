@@ -2,7 +2,9 @@
   "expo": {
     "name": "image-captioning",
     "slug": "image-captioning",
-    "version": "1.0.0",
+    "version": "21.0",
+    "scheme": "imgcap",
+    "owner": "imgcap",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "splash": {
@@ -17,13 +19,22 @@
       "**/*"
     ],
     "ios": {
+      "bundleIdentifier": "com.calpoly.image-captioning",
+      "buildNumber": "0",
       "supportsTablet": true
     },
     "android": {
+      "package": "com.calpoly.image_captioning",
+      "versionCode": 0,
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
+        "foregroundImage": "./assets/icon.png",
         "backgroundColor": "#FFFFFF"
-      }
+      },
+      "permissions": [
+        "CAMERA",
+        "READ_EXTERNAL_STORAGE",
+        "WRITE_EXTERNAL_STORAGE"
+      ]
     },
     "web": {
       "favicon": "./assets/favicon.png"
