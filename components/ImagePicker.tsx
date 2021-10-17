@@ -1,31 +1,29 @@
-import React, {useState, useCallback} from 'react'
+import React, {useState, useCallback, useEffect} from 'react'
 import {View, StyleSheet} from 'react-native'
 import {Text, Button, Portal, Dialog, Paragraph} from 'react-native-paper'
 import Colors from "../constants/Colors"
 import {useDispatch} from 'react-redux';
 import * as ImagePicker from 'expo-image-picker'
-import * as Permissions from 'expo-permissions'
 import * as imageActions from "../store/actions/imageActions";
-import { FC } from 'react';
+import {FC} from 'react';
+import {Camera} from "expo-camera";
 
 
-interface Props{
-    uploadImage: (imageName: string) => void
+interface Props {
+    selectImage: (imageName: string) => void
 }
 
 const ImgPicker: FC<Props> = props => {
     const dispatch = useDispatch();
-    const [isPermissionDialogShown, setIsPermissionDialogShown] = useState(false)
-
+    const [isPermissionDialogShown, setIsPermissionDialogShown] = useState<boolean>(false)
+    const [hasPermission, setHasPermission] = useState<boolean>(false);
+    const [type, setType] = useState(Camera.Constants.Type.back);
 
     const verifyCameraPermissions = async () => {
-        const result = await Permissions.askAsync(Permissions.CAMERA, Permissions.CAMERA_ROLL);
-        if (result.status !== 'granted') {
-            setIsPermissionDialogShown(true)
-            return false
-        }
-        return true;
-    };
+        const {status} = await Camera.requestPermissionsAsync();
+        return status === 'granted';
+    }
+
 
     const takeImageHandler = async () => {
         const hasPermission = await verifyCameraPermissions();
@@ -38,8 +36,8 @@ const ImgPicker: FC<Props> = props => {
             quality: 0.2
         });
 
-        if(!image.cancelled){
-            props.uploadImage(image.uri)
+        if (!image.cancelled) {
+            props.selectImage(image.uri)
         }
     };
 
@@ -52,11 +50,11 @@ const ImgPicker: FC<Props> = props => {
         });
 
         if (!image.cancelled) {
-            props.uploadImage(image.uri)
+            props.selectImage(image.uri)
         }
     };
 
-    const persistImage = useCallback((imageUri : string) => {
+    const persistImage = useCallback((imageUri: string) => {
         dispatch(
             imageActions.persistImage(imageUri)
         );
@@ -66,8 +64,10 @@ const ImgPicker: FC<Props> = props => {
     return (
         <View style={styles.imagePicker}>
             <View style={styles.buttonContainer}>
-                <Button icon="camera" mode="contained" onPress={takeImageHandler} color={Colors.secondary}>Camera</Button>
-                <Button icon="image" mode="contained" onPress={selectImageHandler} color={Colors.secondary}>Gallery</Button>
+                <Button icon="camera" mode="contained" onPress={takeImageHandler}
+                        color={Colors.secondary}>Camera</Button>
+                <Button icon="image" mode="contained" onPress={selectImageHandler}
+                        color={Colors.secondary}>Gallery</Button>
             </View>
 
             <Portal>

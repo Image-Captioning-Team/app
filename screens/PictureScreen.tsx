@@ -1,14 +1,18 @@
-import React, {useCallback, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {StyleSheet, View, Image} from 'react-native';
-import {Text, Subheading} from 'react-native-paper';
+import {Text, Subheading, Button} from 'react-native-paper';
 import ImgPicker from "../components/ImagePicker";
 import {useDispatch} from "react-redux";
 
 import * as imageActions from "../store/actions/imageActions";
+import { Camera } from 'expo-camera';
 
 const ProjectsOverview = ({navigation}) => {
     const dispatch = useDispatch()
-    const [isRefreshing, setIsRefreshing] = useState(false)
+
+    const [selectedImage, setSelectedImage] = useState<string>()
+    const [isRefreshing, setIsRefreshing] = useState<boolean>(false)
+
 
     const uploadImageHandler = useCallback(async (localImageUri) => {
         setIsRefreshing(true)
@@ -23,20 +27,39 @@ const ProjectsOverview = ({navigation}) => {
 
     return (
         <View style={styles.main}>
-            <View style={styles.subheadingContainer}>
-                <Subheading>Upload Picture:</Subheading>
+            <View style={styles.upperContainer}>
+                <View style={styles.subheadingContainer}>
+                    <Subheading>Selected Picture:</Subheading>
+                </View>
+                <View style={styles.uploadButtonContainer}>
+                    {selectedImage &&
+                        <Button icon="upload"  mode="contained">Upload</Button>
+                    }
+                </View>
             </View>
 
-            <View style={styles.imageContainer}>
-                <Image
-                    source={require('../assets/placeholder-image.png')}
-                    style={styles.image}
-                    resizeMode="contain"
-                />
-                <Text style={styles.centeredText}>No picture selected</Text>
-            </View>
 
-            <ImgPicker uploadImage={uploadImageHandler}/>
+            {selectedImage
+                ? <View style={styles.noImageContainer}>
+                    <Image
+                        source={{uri: selectedImage}}
+                        style={styles.image}
+                        resizeMode="contain"
+                    />
+                </View>
+                : <View style={styles.noImageContainer}>
+                    <Image
+                        source={require('../assets/placeholder-image.png')}
+                        style={styles.noImage}
+                        resizeMode="contain"
+                    />
+                    <Text style={styles.centeredText}>No picture selected</Text>
+                </View>
+            }
+
+
+
+            <ImgPicker selectImage={setSelectedImage}/>
         </View>
     )
 
@@ -46,14 +69,30 @@ const ProjectsOverview = ({navigation}) => {
 const styles = StyleSheet.create({
     main: {
         flex: 1,
+            },
+    upperContainer: {
+        flex: .5,
+        flexDirection: "row"
+    },
+    uploadButtonContainer: {
+        flex: 1,
+        height: "100%",
+        alignItems: "center",
+        justifyContent: "center"
     },
     subheadingContainer: {
-        flex: .5,
+        flex: 1,
         paddingLeft: 10,
         height: "100%",
         justifyContent: "flex-end",
     },
     imageContainer: {
+        flex: 3,
+        justifyContent: "center",
+        alignItems: "center",
+        marginHorizontal: 10,
+    },
+    noImageContainer: {
         flex: 3,
         justifyContent: "center",
         alignItems: "center",
@@ -64,7 +103,11 @@ const styles = StyleSheet.create({
         backgroundColor: "white"
     },
     image: {
-        width: "100%"
+        width: "95%",
+        height: "95%"
+    },
+    noImage: {
+        width: "100%",
     },
     centeredText: {
         textAlign: "center"
