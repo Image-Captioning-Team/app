@@ -4,8 +4,6 @@ import {Text, Subheading, Button} from 'react-native-paper';
 import ImgPicker from "../components/ImagePicker";
 import {useDispatch} from "react-redux";
 
-import * as imageActions from "../store/actions/imageActions";
-import { Camera } from 'expo-camera';
 
 const ProjectsOverview = ({navigation}) => {
     const dispatch = useDispatch()
