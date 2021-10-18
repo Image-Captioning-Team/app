@@ -1,32 +1,26 @@
 {
+  "main": "node_modules/expo/AppEntry.js",
   "scripts": {
     "start": "expo start",
-    "android": "expo start -a",
-    "ios": "expo start -i",
+    "android": "expo start --android",
+    "ios": "expo start --ios",
     "web": "expo start --web",
-    "eject": "expo eject"
+    "eject": "expo eject",
+    "api-gen": "openapi-generator-cli generate -i ./swagger.json -g typescript-axios -o api"
   },
   "dependencies": {
+    "@openapitools/openapi-generator-cli": "^2.4.12",
     "@react-navigation/native": "^6.0.6",
     "@react-navigation/stack": "^6.0.11",
-    "axios": "^0.23.0",
     "expo": "~42.0.1",
     "expo-camera": "~11.2.2",
-    "expo-constants": "~11.0.1",
     "expo-image-picker": "~10.2.2",
-    "expo-splash-screen": "~0.11.2",
     "expo-status-bar": "~1.0.4",
-    "expo-updates": "~0.8.1",
-    "intl": "^1.2.5",
     "react": "16.13.1",
     "react-dom": "16.13.1",
-    "react-native": "0.63.4",
+    "react-native": "https://github.com/expo/react-native/archive/sdk-42.0.0.tar.gz",
     "react-native-error-boundary": "^1.1.11",
     "react-native-paper": "^4.9.2",
-    "react-native-reanimated": "~2.2.0",
-    "react-native-screens": "~3.4.0",
-    "react-native-unimodules": "0.14.10",
-    "react-native-web": "^0.17.5",
     "react-redux": "^7.2.5",
     "redux": "^4.1.1",
     "redux-devtools-extension": "^2.13.9",
@@ -35,11 +29,11 @@
   "devDependencies": {
     "@babel/core": "^7.9.0",
     "@types/react": "~16.9.35",
-    "@types/react-native": "~0.63.2",
-    "@types/react-redux": "^7.1.16",
+    "@types/react-intl": "^3.0.0",
+    "@types/react-native": "^0.63.54",
+    "@types/react-native-vector-icons": "^6.4.9",
+    "@types/react-redux": "^7.1.19",
     "typescript": "~4.0.0"
   },
-  "private": true,
-  "name": "image-captioning",
-  "version": "1.0.0"
+  "private": true
 }

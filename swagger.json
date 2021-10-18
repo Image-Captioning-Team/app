@@ -1,0 +1,83 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "version": "1.0.0",
+    "title": "CSC 580 - Image Captioning"
+  },
+  "host": "image-capturing.andreasriepl.de",
+  "basePath": "/api",
+  "schemes": [
+    "https",
+    "http"
+  ],
+  "paths": {
+    "/capture": {
+      "post": {
+        "tags": [
+          "captioning"
+        ],
+        "summary": "Generate an image capture for a given picture",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "Image to be captured",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/ImageRequest"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The capture for the given image",
+            "schema": {
+              "$ref": "#/definitions/CaptureResponse"
+            }
+          },
+          "405": {
+            "description": "Invalid input"
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "ImageRequest": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "image": {
+          "type": "string",
+          "description": "Image as base64 data url"
+        }
+      }
+    },
+    "CaptureResponse": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "capture": {
+          "type": "string",
+          "description": "Capture for given image"
+        }
+      }
+    }
+  },
+  "externalDocs": {
+    "description": "Find out more about Swagger",
+    "url": "http://swagger.io"
+  }
+}

@@ -1,6 +1,5 @@
 import React, {FC, useState} from 'react';
 import {Portal, Dialog, Button, Paragraph, Subheading} from 'react-native-paper';
-import ApiError from "../models/apiError";
 import Colors from "../constants/Colors";
 import {ScrollView, View} from 'react-native';
 
