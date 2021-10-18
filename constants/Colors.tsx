@@ -6,5 +6,8 @@ export default {
 
     primaryBackground: 'rgba(80,140,200,0.2)',
     secondaryBackground: 'rgba(230, 200, 130, 0.2)',
-    cautionBackground: 'rgba(220, 0, 0, 0.2)'
+    cautionBackground: 'rgba(220, 0, 0, 0.2)',
+
+    successBackground: 'rgba(152,251,152, 0.3)',
+    errorBackground: 'rgba(255,99,71, 0.3)'
 };

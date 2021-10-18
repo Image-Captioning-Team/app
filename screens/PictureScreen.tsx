@@ -1,5 +1,5 @@
-import React, {useCallback, useEffect, useState} from 'react';
-import {StyleSheet, View, Image} from 'react-native';
+import React, {useCallback, useEffect, useMemo, useState} from 'react';
+import {StyleSheet, View, Image, ActivityIndicator} from 'react-native';
 import {Text, Subheading, Button} from 'react-native-paper';
 import * as FileSystem from "expo-file-system";
 import {v4 as uuidv4} from 'uuid';
@@ -7,6 +7,8 @@ import ImgPicker from "../components/ImagePicker";
 import {CaptioningApi, CaptureResponse, Configuration, ImageRequest} from "../api";
 
 import getEnvVars from "../environment";
+import Colors from "../constants/Colors";
+
 const {apiUrl} = getEnvVars();
 const config = new Configuration({basePath: apiUrl})
 
@@ -18,12 +20,21 @@ const ProjectsOverview = ({navigation}) => {
     const [errorMessage, setErrorMessage] = useState<string | undefined>(undefined)
 
 
-    const uploadImage = async() => {
+    const setImage = useCallback((image: string) => {
+        setImageCapture(undefined)
+        setErrorMessage(undefined)
+        setSelectedImage(image)
+    }, [selectedImage, setSelectedImage, imageCapture, errorMessage])
+
+
+    const uploadImage = async () => {
         setIsRefreshing(true)
+        setErrorMessage(undefined)
+        setImageCapture(undefined)
         const imageCaptioningControllerApi = new CaptioningApi(config)
 
         try {
-            if(!selectedImage){
+            if (!selectedImage) {
                 throw new Error("No image selected")
             }
 
@@ -43,17 +54,40 @@ const ProjectsOverview = ({navigation}) => {
                 setImageCapture(captureResponse.capture)
 
             } else {
-                setErrorMessage("Error while uploading image.")
+                setErrorMessage("Server-Error while uploading image. Please try again.")
                 console.log("Server-Error while uploading image: " + response.status)
             }
         } catch (error) {
-            setErrorMessage("Error while uploading image.")
+            setErrorMessage("Error while uploading image. Please try again.")
             console.log("Error while uploading image: " + error.message)
             console.log(error)
         }
 
         setIsRefreshing(false)
     }
+
+
+    const captureBoxContent = useMemo(() => {
+        if (imageCapture) {
+            return (
+                <View style={{...styles.textContainer, backgroundColor: Colors.successBackground}}>
+                    <Text>{imageCapture}</Text>
+                </View>
+            )}
+        else if (errorMessage) {
+            return (
+                <View style={{...styles.textContainer, backgroundColor: Colors.errorBackground}}>
+                    <Text>{errorMessage}</Text>
+                </View>
+            )
+        } else {
+            return (
+                <View style={styles.textContainer}>
+                    <Text>Select and upload an image to receive a capture.</Text>
+                </View>
+            )
+        }
+    }, [errorMessage, imageCapture])
 
     return (
         <View style={styles.main}>
@@ -63,7 +97,7 @@ const ProjectsOverview = ({navigation}) => {
                 </View>
                 <View style={styles.uploadButtonContainer}>
                     {selectedImage &&
-                    <Button icon="upload" mode="contained" onPress={uploadImage}>Upload</Button>
+                        <Button loading={isRefreshing} icon="upload" mode="contained" onPress={uploadImage}>{isRefreshing ? "Uploading" : "Upload"}</Button>
                     }
                 </View>
             </View>
@@ -89,12 +123,10 @@ const ProjectsOverview = ({navigation}) => {
 
             <View style={styles.captureTextContainer}>
                 <Subheading>Calculated Capture:</Subheading>
-                <View style={styles.textContainer}>
-                    <Text>{imageCapture ?? "Select and upload an image to receive a capture."}</Text>
-                </View>
+                {captureBoxContent}
             </View>
 
-            <ImgPicker selectImage={setSelectedImage}/>
+            <ImgPicker selectImage={setImage}/>
         </View>
     )
 
@@ -112,7 +144,8 @@ const styles = StyleSheet.create({
     uploadButtonContainer: {
         flex: 1,
         height: "100%",
-        alignItems: "center",
+        marginRight: 10,
+        alignItems: "flex-end",
         justifyContent: "center"
     },
     subheadingContainer: {
@@ -126,6 +159,10 @@ const styles = StyleSheet.create({
         justifyContent: "center",
         alignItems: "center",
         marginHorizontal: 10,
+    },
+    activityIndicator: {
+        flex: 1,
+        justifyContent: 'center',
     },
     noImageContainer: {
         flex: 3,
@@ -162,7 +199,7 @@ const styles = StyleSheet.create({
 
 export const screenOptions = () => {
     return {
-        headerTitle: 'Take Picture'
+        headerTitle: 'Image Captioning'
     };
 };
 
