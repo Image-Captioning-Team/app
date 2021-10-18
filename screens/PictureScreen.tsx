@@ -90,7 +90,7 @@ const ProjectsOverview = ({navigation}) => {
             <View style={styles.captureTextContainer}>
                 <Subheading>Calculated Capture:</Subheading>
                 <View style={styles.textContainer}>
-                    <Text>TBD</Text>
+                    <Text>{imageCapture ?? "Select and upload an image to receive a capture."}</Text>
                 </View>
             </View>
 
@@ -154,7 +154,8 @@ const styles = StyleSheet.create({
     textContainer: {
         borderRadius: 10,
         borderWidth: 1,
-        minHeight: 80
+        minHeight: 80,
+        padding: 5
     }
 })
 

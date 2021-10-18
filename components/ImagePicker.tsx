@@ -2,9 +2,7 @@ import React, {useState, useCallback, useEffect} from 'react'
 import {View, StyleSheet} from 'react-native'
 import {Text, Button, Portal, Dialog, Paragraph} from 'react-native-paper'
 import Colors from "../constants/Colors"
-import {useDispatch} from 'react-redux';
 import * as ImagePicker from 'expo-image-picker'
-import * as imageActions from "../store/actions/imageActions";
 import {FC} from 'react';
 import {Camera} from "expo-camera";
 
@@ -14,9 +12,7 @@ interface Props {
 }
 
 const ImgPicker: FC<Props> = props => {
-    const dispatch = useDispatch();
     const [isPermissionDialogShown, setIsPermissionDialogShown] = useState<boolean>(false)
-    const [hasPermission, setHasPermission] = useState<boolean>(false);
     const [type, setType] = useState(Camera.Constants.Type.back);
 
     const verifyCameraPermissions = async () => {
@@ -53,12 +49,6 @@ const ImgPicker: FC<Props> = props => {
             props.selectImage(image.uri)
         }
     };
-
-    const persistImage = useCallback((imageUri: string) => {
-        dispatch(
-            imageActions.persistImage(imageUri)
-        );
-    }, [dispatch]);
 
 
     return (
