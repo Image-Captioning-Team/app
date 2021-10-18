@@ -53,8 +53,8 @@
       "type": "object",
       "properties": {
         "id": {
-          "type": "integer",
-          "format": "int64"
+          "type": "string",
+          "format": "uuid"
         },
         "image": {
           "type": "string",
@@ -66,8 +66,8 @@
       "type": "object",
       "properties": {
         "id": {
-          "type": "integer",
-          "format": "int64"
+          "type": "string",
+          "format": "uuid"
         },
         "capture": {
           "type": "string",

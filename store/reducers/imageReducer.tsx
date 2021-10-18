@@ -1,10 +1,9 @@
 import {DELETE_IMAGE, PERSIST_IMAGE, SET_IMAGES, UPLOAD_IMAGE} from "../actions/imageActions";
-import {FileTO} from "../../api";
 
 
 const initialState = {
     //savedImages: new Array<FileTO>(),
-    loadedImages: new Array<FileTO>()
+    loadedImages: new Array()
 }
 
 

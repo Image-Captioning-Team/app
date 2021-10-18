@@ -1,27 +1,59 @@
 import React, {useCallback, useEffect, useState} from 'react';
 import {StyleSheet, View, Image} from 'react-native';
 import {Text, Subheading, Button} from 'react-native-paper';
+import * as FileSystem from "expo-file-system";
+import {v4 as uuidv4} from 'uuid';
 import ImgPicker from "../components/ImagePicker";
-import {useDispatch} from "react-redux";
+import {CaptioningApi, CaptureResponse, Configuration, ImageRequest} from "../api";
+
+import getEnvVars from "../environment";
+const {apiUrl} = getEnvVars();
+const config = new Configuration({basePath: apiUrl})
 
 
 const ProjectsOverview = ({navigation}) => {
-    const dispatch = useDispatch()
-
-    const [selectedImage, setSelectedImage] = useState<string>()
+    const [selectedImage, setSelectedImage] = useState<string | undefined>(undefined)
     const [isRefreshing, setIsRefreshing] = useState<boolean>(false)
+    const [imageCapture, setImageCapture] = useState<string | undefined>(undefined)
+    const [errorMessage, setErrorMessage] = useState<string | undefined>(undefined)
 
 
-    const uploadImageHandler = useCallback(async (localImageUri) => {
+    const uploadImage = async() => {
         setIsRefreshing(true)
-        //dispatch(
-        //    imageActions.persistImage(selectedJob.id, selectedWorking.id, imageUri)
-        //);
-        //await dispatch(
-        //    imageActions.uploadImage(selectedJob.id, selectedWorking.id, localImageUri)
-        //);
+        const imageCaptioningControllerApi = new CaptioningApi(config)
+
+        try {
+            if(!selectedImage){
+                throw new Error("No image selected")
+            }
+
+            const encodedFileContent = await FileSystem.readAsStringAsync(selectedImage, {encoding: FileSystem.EncodingType.Base64})
+            const fileExtension: string = selectedImage.split('.').pop() ?? ""
+            const base64Image: string = `data:image/${fileExtension};base64,${encodedFileContent}`
+
+            const imageRequest: ImageRequest = {
+                id: uuidv4(),
+                image: base64Image
+            }
+
+            const response = await imageCaptioningControllerApi.capturePost(imageRequest)
+
+            if (response.status === 200) {
+                const captureResponse: CaptureResponse = response.data
+                setImageCapture(captureResponse.capture)
+
+            } else {
+                setErrorMessage("Error while uploading image.")
+                console.log("Server-Error while uploading image: " + response.status)
+            }
+        } catch (error) {
+            setErrorMessage("Error while uploading image.")
+            console.log("Error while uploading image: " + error.message)
+            console.log(error)
+        }
+
         setIsRefreshing(false)
-    }, [dispatch]);
+    }
 
     return (
         <View style={styles.main}>
@@ -31,7 +63,7 @@ const ProjectsOverview = ({navigation}) => {
                 </View>
                 <View style={styles.uploadButtonContainer}>
                     {selectedImage &&
-                        <Button icon="upload"  mode="contained">Upload</Button>
+                    <Button icon="upload" mode="contained" onPress={uploadImage}>Upload</Button>
                     }
                 </View>
             </View>
@@ -55,7 +87,12 @@ const ProjectsOverview = ({navigation}) => {
                 </View>
             }
 
-
+            <View style={styles.captureTextContainer}>
+                <Subheading>Calculated Capture:</Subheading>
+                <View style={styles.textContainer}>
+                    <Text>TBD</Text>
+                </View>
+            </View>
 
             <ImgPicker selectImage={setSelectedImage}/>
         </View>
@@ -67,7 +104,7 @@ const ProjectsOverview = ({navigation}) => {
 const styles = StyleSheet.create({
     main: {
         flex: 1,
-            },
+    },
     upperContainer: {
         flex: .5,
         flexDirection: "row"
@@ -109,6 +146,15 @@ const styles = StyleSheet.create({
     },
     centeredText: {
         textAlign: "center"
+    },
+    captureTextContainer: {
+        flex: 1,
+        margin: 10,
+    },
+    textContainer: {
+        borderRadius: 10,
+        borderWidth: 1,
+        minHeight: 80
     }
 })
 

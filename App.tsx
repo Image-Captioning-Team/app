@@ -7,6 +7,7 @@ import {composeWithDevTools} from 'redux-devtools-extension';
 import {DefaultTheme, Provider as PaperProvider} from 'react-native-paper';
 import {NavigationContainer} from "@react-navigation/native";
 import ErrorBoundary from 'react-native-error-boundary'
+import 'react-native-url-polyfill/auto';
 
 import Colors from './constants/Colors';
 import MainNavigator from "./navigation/MainNavigator";

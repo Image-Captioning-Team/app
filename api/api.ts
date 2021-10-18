@@ -29,10 +29,10 @@ import { BASE_PATH, COLLECTION_FORMATS, RequestArgs, BaseAPI, RequiredError } fr
 export interface CaptureResponse {
     /**
      * 
-     * @type {number}
+     * @type {string}
      * @memberof CaptureResponse
      */
-    id?: number;
+    id?: string;
     /**
      * Capture for given image
      * @type {string}
@@ -48,10 +48,10 @@ export interface CaptureResponse {
 export interface ImageRequest {
     /**
      * 
-     * @type {number}
+     * @type {string}
      * @memberof ImageRequest
      */
-    id?: number;
+    id?: string;
     /**
      * Image as base64 data url
      * @type {string}
