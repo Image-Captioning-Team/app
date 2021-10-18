@@ -8,7 +8,7 @@ const ENV = {
         apiUrl: localhost,
     },
     prod: {
-        apiUrl: "https://image-capturing.andreasriepl.de",
+        apiUrl: "https://image-capturing.andreasriepl.de/api",
     }
 };
 
