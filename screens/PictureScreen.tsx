@@ -39,12 +39,10 @@ const ProjectsOverview = ({navigation}) => {
             }
 
             const encodedFileContent = await FileSystem.readAsStringAsync(selectedImage, {encoding: FileSystem.EncodingType.Base64})
-            const fileExtension: string = selectedImage.split('.').pop() ?? ""
-            const base64Image: string = `data:image/${fileExtension};base64,${encodedFileContent}`
 
             const imageRequest: ImageRequest = {
                 id: uuidv4(),
-                image: base64Image
+                image: encodedFileContent
             }
 
             const response = await imageCaptioningControllerApi.capturePost(imageRequest)
@@ -56,6 +54,7 @@ const ProjectsOverview = ({navigation}) => {
             } else {
                 setErrorMessage("Server-Error while uploading image. Please try again.")
                 console.log("Server-Error while uploading image: " + response.status)
+                console.log(response)
             }
         } catch (error) {
             setErrorMessage("Error while uploading image. Please try again.")

@@ -8,7 +8,7 @@ const ENV = {
         apiUrl: localhost,
     },
     prod: {
-        apiUrl: "https://image-capturing.andreasriepl.de/api",
+        apiUrl: "https://image-captioning.andreasriepl.de/api",
     }
 };
 
@@ -16,7 +16,8 @@ const ENV = {
 const getEnvVars = (env = Constants.manifest.releaseChannel) => {
     // __DEV__ is true when run locally, but false when published.
     if (__DEV__) {
-        return ENV.local;
+        return ENV.prod;
+        //return ENV.local;
     } else {
         if(env !== undefined){
             if (env.indexOf('default') !== -1) return ENV.prod //iPhone
