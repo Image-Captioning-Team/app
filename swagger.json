@@ -69,9 +69,13 @@
           "type": "string",
           "format": "uuid"
         },
-        "capture": {
+        "attention_caption": {
           "type": "string",
-          "description": "Capture for given image"
+          "description": "Caption of the attention model"
+        },
+        "lstm_caption": {
+          "type": "string",
+          "description": "Caption of the lstm model"
         }
       }
     }

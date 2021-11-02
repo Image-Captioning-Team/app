@@ -1,6 +1,6 @@
 import React, {useCallback, useEffect, useMemo, useState} from 'react';
 import {StyleSheet, View, Image, ActivityIndicator} from 'react-native';
-import {Text, Subheading, Button} from 'react-native-paper';
+import {Text, Subheading, Button, Divider} from 'react-native-paper';
 import * as FileSystem from "expo-file-system";
 import {v4 as uuidv4} from 'uuid';
 import ImgPicker from "../components/ImagePicker";
@@ -16,21 +16,24 @@ const config = new Configuration({basePath: apiUrl})
 const ProjectsOverview = ({navigation}) => {
     const [selectedImage, setSelectedImage] = useState<string | undefined>(undefined)
     const [isRefreshing, setIsRefreshing] = useState<boolean>(false)
-    const [imageCapture, setImageCapture] = useState<string | undefined>(undefined)
+    const [attentionCapture, setAttentionCapture] = useState<string | undefined>(undefined)
+    const [lstmCapture, setLstmCapture] = useState<string | undefined>(undefined)
     const [errorMessage, setErrorMessage] = useState<string | undefined>(undefined)
 
 
     const setImage = useCallback((image: string) => {
-        setImageCapture(undefined)
+        setAttentionCapture(undefined)
+        setLstmCapture(undefined)
         setErrorMessage(undefined)
         setSelectedImage(image)
-    }, [selectedImage, setSelectedImage, imageCapture, errorMessage])
+    }, [selectedImage, setSelectedImage, attentionCapture, errorMessage])
 
 
     const uploadImage = async () => {
         setIsRefreshing(true)
         setErrorMessage(undefined)
-        setImageCapture(undefined)
+        setAttentionCapture(undefined)
+        setLstmCapture(undefined)
         const imageCaptioningControllerApi = new CaptioningApi(config)
 
         try {
@@ -49,7 +52,8 @@ const ProjectsOverview = ({navigation}) => {
 
             if (response.status === 200) {
                 const captureResponse: CaptureResponse = response.data
-                setImageCapture(captureResponse.capture)
+                setAttentionCapture(captureResponse.attention_caption)
+                setLstmCapture(captureResponse.lstm_caption)
 
             } else {
                 setErrorMessage("Server-Error while uploading image. Please try again.")
@@ -67,10 +71,12 @@ const ProjectsOverview = ({navigation}) => {
 
 
     const captureBoxContent = useMemo(() => {
-        if (imageCapture) {
+        if (attentionCapture && lstmCapture) {
             return (
                 <View style={{...styles.textContainer, backgroundColor: Colors.successBackground}}>
-                    <Text>{imageCapture}</Text>
+                    <Text>Response of Attention Model: "{attentionCapture}"</Text>
+                    <Divider style={styles.divider}/>
+                    <Text>Response of LSTM Model: "{lstmCapture}"</Text>
                 </View>
             )}
         else if (errorMessage) {
@@ -86,7 +92,7 @@ const ProjectsOverview = ({navigation}) => {
                 </View>
             )
         }
-    }, [errorMessage, imageCapture])
+    }, [errorMessage, attentionCapture, lstmCapture])
 
     return (
         <View style={styles.main}>
@@ -121,7 +127,7 @@ const ProjectsOverview = ({navigation}) => {
             }
 
             <View style={styles.captureTextContainer}>
-                <Subheading>Calculated Capture:</Subheading>
+                <Subheading>Calculated Captures:</Subheading>
                 {captureBoxContent}
             </View>
 
@@ -192,6 +198,9 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         minHeight: 80,
         padding: 5
+    },
+    divider: {
+        marginVertical: 5
     }
 })
 

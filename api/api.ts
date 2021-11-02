@@ -34,11 +34,17 @@ export interface CaptureResponse {
      */
     id?: string;
     /**
-     * Capture for given image
+     * Caption of the attention model
      * @type {string}
      * @memberof CaptureResponse
      */
-    capture?: string;
+    attention_caption?: string;
+    /**
+     * Caption of the lstm model
+     * @type {string}
+     * @memberof CaptureResponse
+     */
+    lstm_caption?: string;
 }
 /**
  * 
